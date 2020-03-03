@@ -1,0 +1,37 @@
+.cell{
+    height: 20px;
+    width: 20px;
+    margin: 0px;
+    padding: 0px;
+    border: 1px solid black;
+}
+
+.cell-obs-s{
+    border: 3px solid #17BEBB;
+}
+.cell-obs-m{
+    border: 3px solid #006494;
+}
+.cell-obs-l{
+    border: 3px solid #011627;
+}
+
+.cell-wall{
+    background-color: #000B19;
+}
+
+.cell-start{
+    background-color: #00A336;
+}
+
+.cell-end{
+    background-color: #FF0022;
+}
+
+.cell-path{
+    background-color: #F9CB13;
+}
+
+.cell-vis{
+    background-color: #FAEBCF;
+}
