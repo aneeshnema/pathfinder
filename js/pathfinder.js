@@ -50,7 +50,6 @@ class Heap {
             m = l;
         if (r < this.size && this.compare(this.arr[r], this.arr[m]) < 0)
             m = r;
-        //console.log([i, m, l, r]);
         if (m != i) {
             let temp = this.arr[m];
             this.arr[m] = this.arr[i];
@@ -140,7 +139,6 @@ export class Grid {
         if (Array.isArray(end))
             end = Point.make_point(end);
         let parent = Grid.make_grid(this.n, this.m, new Point(-1, -1));
-        //console.log(this.n+', '+this.m);
         let heap = new Heap(this.compare.bind(this));
         this.distance = Grid.make_grid(this.n, this.m, Infinity);
         this.distance[start.x][start.y] = 0;
@@ -154,7 +152,6 @@ export class Grid {
                 if (this.distance[p.x][p.y] > this.distance[top.x][top.y] + this.weight[top.x][top.y]) {
                     parent[p.x][p.y] = top;
                     this.distance[p.x][p.y] = this.distance[top.x][top.y] + this.weight[top.x][top.y];
-                    //console.log(p.x+", "+p.y + "  "+this.distance[p.x][p.y]);
                     heap.push(p);
                     cur_vis.push(p);
                 }
@@ -169,7 +166,6 @@ export class Grid {
         for (var p = parent[end.x][end.y]; !p.equals(start); p = parent[p.x][p.y])
             path.unshift(p);
         console.assert(start.equals(p), "error in found path");
-        //console.log(path);
         console.log('total cost =', this.distance[end.x][end.y]);
         return [path, visorder];
     }
@@ -184,7 +180,6 @@ export class Grid {
         this.start = start;
         this.end = end;
         let parent = Grid.make_grid(this.n, this.m, new Point(-1, -1));
-        //console.log(this.n+', '+this.m);
         let heap = new Heap(this.compare_astar.bind(this));
         this.distance = Grid.make_grid(this.n, this.m, Infinity);
         this.distance[start.x][start.y] = 0;
@@ -198,7 +193,6 @@ export class Grid {
                 if (this.distance[p.x][p.y] > this.distance[top.x][top.y] + this.weight[top.x][top.y]) {
                     parent[p.x][p.y] = top;
                     this.distance[p.x][p.y] = this.distance[top.x][top.y] + this.weight[top.x][top.y];
-                    //console.log(p.x+", "+p.y + "  "+this.distance[p.x][p.y]);
                     heap.push(p);
                     cur_vis.push(p);
                 }
@@ -213,7 +207,6 @@ export class Grid {
         for (var p = parent[end.x][end.y]; !p.equals(start); p = parent[p.x][p.y])
             path.unshift(p);
         console.assert(start.equals(p), "error in found path");
-        //console.log(path);
         console.log('total cost =', this.distance[end.x][end.y]);
         delete this.start;
         delete this.end;

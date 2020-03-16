@@ -6,7 +6,7 @@ var map_wrapper;
 var map;
 var start;
 var end;
-// console.log('sad');
+
 class Map extends Grid {
     constructor(n, m) {
         super(n, m);
@@ -118,7 +118,6 @@ class Map extends Grid {
                 this.addcelltype(p.getstr, 'cell-path');
             }
         }
-        //console.log('start '+path.map(p => this.etid(p))+' end');
     }
 
     paint(){
@@ -143,10 +142,8 @@ class Map extends Grid {
                 return;
             }
             let front = visorder_dup.shift();
-            for (let p of front){
+            for (let p of front)
                 Map.addcelltype(p.getstr, 'cell-vis');
-                console.log(p.getstr);
-            }
             window.requestAnimationFrame(paint_callback_vis);    
         }
         document.body.style.pointerEvents = 'none';
@@ -161,10 +158,8 @@ function create(evt) {
         map.make_path(true);
         return;
     }
-    console.log('mousedown');
     if (!evt.target.classList.contains('cell')) return;
     let cell = evt.target;
-    console.log(cell.id);
     if (start.equals(map.getcoordinates(cell.id))) {
         map.make_path();
         map_wrapper.onmouseover = (evt) => {
@@ -231,8 +226,5 @@ document.addEventListener("DOMContentLoaded", () => {
     map_wrapper = document.getElementById('map');
     reset();
     map_wrapper.onmousedown = create;
-    map_wrapper.onmouseup = () => {
-        console.log('mouseup');
-        map_wrapper.onmouseover = null;
-    }
+    map_wrapper.onmouseup = () => map_wrapper.onmouseover = null;
 });
