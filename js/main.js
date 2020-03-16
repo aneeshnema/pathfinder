@@ -1,4 +1,4 @@
-/* eslint-disable no-undef */
+import {Point, Grid} from './pathfinder.js';
 
 var current_cell_type = 'cell-wall';
 var current_algo = 'dijistra';
@@ -6,7 +6,7 @@ var map_wrapper;
 var map;
 var start;
 var end;
-
+// console.log('sad');
 class Map extends Grid {
     constructor(n, m) {
         super(n, m);
@@ -80,7 +80,7 @@ class Map extends Grid {
         cell.classList.remove(cell_type);
     }
 
-    make_path(start, end) {
+    make_path(paint_flag=false) {
         for (let p of this.path)
             this.removecelltype(p.getstr, 'cell-path');
         for (let arr of this.visorder)
@@ -92,6 +92,7 @@ class Map extends Grid {
                 [this.path, this.visorder] = this.dijistra(start, end);
                 break;
             case 'a*':
+                [this.path, this.visorder] = this.astar(start, end);
                 break;
             case 'bfs':
                 [this.path, this.visorder] = this.bfs(start, end);
@@ -105,32 +106,59 @@ class Map extends Grid {
             this.path = [];
             return;
         }
-        for (let arr of this.visorder)
-            for (let p of arr)
-                this.addcelltype(p.getstr, 'cell-vis');
-        this.removecelltype(end.getstr, 'cell-vis');
-        for (let p of this.path) {
-            this.removecelltype(p.getstr, 'cell-vis');
-            this.addcelltype(p.getstr, 'cell-path');
+        if(paint_flag)
+            this.paint();
+        else{
+            for (let arr of this.visorder)
+                for (let p of arr)
+                    this.addcelltype(p.getstr, 'cell-vis');
+            this.removecelltype(end.getstr, 'cell-vis');
+            for (let p of this.path) {
+                this.removecelltype(p.getstr, 'cell-vis');
+                this.addcelltype(p.getstr, 'cell-path');
+            }
         }
-
         //console.log('start '+path.map(p => this.etid(p))+' end');
+    }
+
+    paint(){
+        let visorder_dup = this.visorder.slice();
+        let path_dup = this.path.slice();
+        
+        function paint_callback_path(){
+            if(path_dup.length == 0){
+                document.body.style.pointerEvents = '';
+                return;
+            }
+            let front = path_dup.shift();
+            Map.removecelltype(front.getstr, 'cell-vis');
+            Map.addcelltype(front.getstr, 'cell-path');
+            window.requestAnimationFrame(paint_callback_path);
+        }
+        
+        function paint_callback_vis(){
+            if(visorder_dup.length == 0){
+                Map.removecelltype(end.getstr, 'cell-vis');
+                window.requestAnimationFrame(paint_callback_path);
+                return;
+            }
+            let front = visorder_dup.shift();
+            for (let p of front){
+                Map.addcelltype(p.getstr, 'cell-vis');
+                console.log(p.getstr);
+            }
+            window.requestAnimationFrame(paint_callback_vis);    
+        }
+        document.body.style.pointerEvents = 'none';
+        window.requestAnimationFrame(paint_callback_vis);
     }
 }
 
-// function visadd(p, ct) {
-//     Map.addcelltype(p.getstr, ct);
-// }
-
-// function visremove(p, ct) {
-//     Map.removecelltype(p.getstr, ct);
-// }
-
 function create(evt) {
-    current_algo = $('#algoselection').val();
-    current_cell_type = $('#cellselection').val();
+    current_algo = document.getElementById('algoselection').value;
+    current_cell_type = document.getElementById('cellselection').value;
     if (evt == undefined) {
-        map.make_path(start, end);
+        map.make_path(true);
         return;
     }
     console.log('mousedown');
@@ -138,48 +166,48 @@ function create(evt) {
     let cell = evt.target;
     console.log(cell.id);
     if (start.equals(map.getcoordinates(cell.id))) {
-        map.make_path(start, end);
-        map_wrapper.mouseover(function (evt) {
+        map.make_path();
+        map_wrapper.onmouseover = (evt) => {
             let cell = evt.target;
             if (!cell.classList.contains('cell')) return;
             if (end.equals(map.getcoordinates(cell.id))) return;
             map.toggle_cell(start.getstr, 'cell-free');
             [start.x, start.y] = map.getcoordinates(cell.id);
             map.toggle_cell(cell, 'cell-start');
-            map.make_path(start, end);
-        });
+            map.make_path();
+        };
     }
     else if (end.equals(map.getcoordinates(cell.id))) {
-        map.make_path(start, end);
-        map_wrapper.mouseover(function (evt) {
+        map.make_path();
+        map_wrapper.onmouseover = (evt) => {
             let cell = evt.target;
             if (!cell.classList.contains('cell')) return;
             if (start.equals(map.getcoordinates(cell.id))) return;
             map.toggle_cell(end.getstr, 'cell-free');
             [end.x, end.y] = map.getcoordinates(cell.id);
             map.toggle_cell(cell, 'cell-end');
-            map.make_path(start, end);
-        });
+            map.make_path();
+        };
     }
     else {
         map.toggle_cell(cell, current_cell_type);
-        map.make_path(start, end);
-        map_wrapper.mouseover(function (evt) {
+        map.make_path();
+        map_wrapper.onmouseover = (evt) => {
             let cell = evt.target;
             if (!cell.classList.contains('cell') || start.equals(map.getcoordinates(cell.id)) || end.equals(map.getcoordinates(cell.id))) return;
             map.toggle_cell(cell, current_cell_type);
-            map.make_path(start, end);
-        });
+            map.make_path();
+        };
     }
     return false;
 }
 
 function reset() {
-    map_wrapper.empty();
-    var n = (window.innerHeight - $('#nav').height()) / 20 | 0;
+    map_wrapper.innerHTML = "";
+    var n = (window.innerHeight - document.getElementById('nav').offsetHeight) / 20 | 0;
     var m = window.innerWidth / 20 | 0;
     map = new Map(n, m);
-    map_wrapper.append(map.content);
+    map_wrapper.appendChild(map.content);
     start = new Point(n / 3 | 0, m / 3 | 0);
     end = new Point(2 * n / 3 | 0, 2 * m / 3 | 0);
     map.toggle_cell(start.getstr, 'cell-start');
@@ -197,12 +225,14 @@ Map.cell_weights = {
     'cell-path': 0.1,
 }
 
-$(document).ready(function () {
-    map_wrapper = $('#map');
+document.addEventListener("DOMContentLoaded", () => { 
+    document.getElementById('go').onclick = () => create();
+    document.getElementById('reset').onclick = reset;
+    map_wrapper = document.getElementById('map');
     reset();
-    map_wrapper.mousedown(create);
-    map_wrapper.mouseup(function () {
+    map_wrapper.onmousedown = create;
+    map_wrapper.onmouseup = () => {
         console.log('mouseup');
-        map_wrapper.unbind('mouseover');
-    });
+        map_wrapper.onmouseover = null;
+    }
 });

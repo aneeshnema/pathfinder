@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-class Point {
+export class Point {
     constructor(x, y) {
         this.x = x;
         this.y = y;
@@ -93,7 +92,7 @@ class Heap {
     }
 }
 
-class Grid {
+export class Grid {
     constructor(n, m) {
         this.n = n;
         this.m = m;
@@ -125,6 +124,14 @@ class Grid {
         return this.distance[a.x][a.y] - this.distance[b.x][b.y];
     }
 
+    hurestic_dist(p){
+        return Math.abs(this.end.x - p.x) + Math.abs(this.end.y - p.y);
+    }
+
+    compare_astar(a, b){
+        return this.compare(a, b) + 0.1*this.hurestic_dist(a) - 0.1*this.hurestic_dist(b);
+    }
+    
     dijistra(start, end) {
         console.assert(start instanceof Point || Array.isArray(start), "start must be instance of Point or Array");
         console.assert(end instanceof Point || Array.isArray(end), "end must be instance of Point or Array");
@@ -163,6 +170,53 @@ class Grid {
             path.unshift(p);
         console.assert(start.equals(p), "error in found path");
         //console.log(path);
+        console.log('total cost =', this.distance[end.x][end.y]);
+        return [path, visorder];
+    }
+
+    astar(start, end) {
+        console.assert(start instanceof Point || Array.isArray(start), "start must be instance of Point or Array");
+        console.assert(end instanceof Point || Array.isArray(end), "end must be instance of Point or Array");
+        if (Array.isArray(start))
+            start = Point.make_point(start);
+        if (Array.isArray(end))
+            end = Point.make_point(end);
+        this.start = start;
+        this.end = end;
+        let parent = Grid.make_grid(this.n, this.m, new Point(-1, -1));
+        //console.log(this.n+', '+this.m);
+        let heap = new Heap(this.compare_astar.bind(this));
+        this.distance = Grid.make_grid(this.n, this.m, Infinity);
+        this.distance[start.x][start.y] = 0;
+        heap.push(start);
+        let visorder = [];
+        while (heap.size > 0 && parent[end.x][end.y].equals([-1, -1])) {
+            let top = heap.pop();
+            let cur_vis = [];
+            for (let p of this.getneighbours(top)) {
+                if (this.weight[p.x][p.y] == Infinity) continue;
+                if (this.distance[p.x][p.y] > this.distance[top.x][top.y] + this.weight[top.x][top.y]) {
+                    parent[p.x][p.y] = top;
+                    this.distance[p.x][p.y] = this.distance[top.x][top.y] + this.weight[top.x][top.y];
+                    //console.log(p.x+", "+p.y + "  "+this.distance[p.x][p.y]);
+                    heap.push(p);
+                    cur_vis.push(p);
+                }
+            }
+            visorder.push(cur_vis);
+        }
+        if (parent[end.x][end.y].equals([-1, -1])) {
+            console.log("no path found");
+            return [undefined, visorder];
+        }
+        let path = [];
+        for (var p = parent[end.x][end.y]; !p.equals(start); p = parent[p.x][p.y])
+            path.unshift(p);
+        console.assert(start.equals(p), "error in found path");
+        //console.log(path);
+        console.log('total cost =', this.distance[end.x][end.y]);
+        delete this.start;
+        delete this.end;
         return [path, visorder];
     }
 
@@ -235,18 +289,4 @@ class Grid {
         console.assert(start.equals(p), "error in found path");
         return [path, visorder];
     }
-}
-
-function print2D(arr) {
-    var str = "";
-    for (let i = 0; i < arr.length; i++) {
-        for (let j = 0; j < arr[i].length; j++) {
-            let v = arr[i][j];
-            if (v == Infinity)
-                v = "-";
-            str += v + " ";
-        }
-        str += "\n";
-    }
-    console.log(str);
 }
