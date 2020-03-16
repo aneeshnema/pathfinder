@@ -2,61 +2,130 @@
 <html lang="en">
 
 <head>
-  <title>Path Finder</title>
-  <!-- Required meta tags -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Path Finder</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <link rel="stylesheet" href="./css/basic.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="./css/basic.css">
 </head>
 
 <body>
-  <nav id="nav" class="navbar navbar-expand-sm navbar-light bg-light">
-    <a class="navbar-brand">Path Finder</a>
-    <button class="navbar-toggler hidden-lg-up" type="button" data-toggle="collapse" data-target="#collapsibleNavId"
-      aria-controls="collapsibleNavId" aria-expanded="false" aria-label="Toggle navigation"></button>
-    <div class="collapse navbar-collapse" id="collapsibleNavId">
-      <form class="form-inline my-2 my-lg-0 ml-auto mr-3">
-        <label for="cellselection" class="mr-2">Cell Type</label>
-        <select class="form-control" id="cellselection">
-          <option value="cell-wall">Wall</option>
-          <option value="cell-obs-l">Large Obstacle</option>
-          <option value="cell-obs-m">Medium Obstacle</option>
-          <option value="cell-obs-s">Small Obstacle</option>
-          <option value="cell-free">Free Path</option>
-        </select>
-      </form>
-      <form class="form-inline my-2 my-lg-0 mr-3">
-        <label for="algoselection" class="mr-2">Algorithm</label>
-        <select class="form-control" id="algoselection">
-          <option value="dijistra">Dijistra</option>
-          <option value="a*">A*</option>
-          <option value="bfs">BFS</option>
-          <option value="dfs">DFS</option>
-        </select>
-      </form>
-      <button id='go' type="button" class="btn btn-success mx-3">Go</button>
-      <button id='reset' type="button" class="btn btn-danger ml-3 mr-auto">Reset</button>
-      <ul class="navbar-nav ml-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="https://github.com/aneeshnema/pathfinder">
-            <span class="d-none d-sm-inline">View on GitHub </span>
-            <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-mark-github"
-              aria-hidden="true">
-              <path fill-rule="evenodd"
-                d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z">
-              </path>
-            </svg>
-          </a>
-        </li>
-      </ul>
+    <nav id="nav" class="navbar navbar-expand-sm navbar-light bg-light">
+        <a class="navbar-brand">Path Finder</a>
+        <button class="navbar-toggler hidden-lg-up" type="button" data-toggle="collapse" data-target="#collapsibleNavId"
+            aria-controls="collapsibleNavId" aria-expanded="false" aria-label="Toggle navigation"></button>
+        <div class="collapse navbar-collapse" id="collapsibleNavId">
+            <form class="form-inline my-2 my-lg-0 ml-auto mr-3">
+                <label for="cellselection" class="mr-2">Cell Type</label>
+                <select class="form-control" id="cellselection">
+                    <option value="cell-wall">Wall</option>
+                    <option value="cell-obs-l">Large Obstacle</option>
+                    <option value="cell-obs">Small Obstacle</option>
+                    <option value="cell-free">Free Path</option>
+                </select>
+            </form>
+            <form class="form-inline my-2 my-lg-0 mr-3">
+                <label for="algoselection" class="mr-2">Algorithm</label>
+                <select class="form-control" id="algoselection">
+                    <option value="dijistra">Dijistra</option>
+                    <option value="a*">A*</option>
+                    <option value="bfs">BFS</option>
+                    <option value="dfs">DFS</option>
+                </select>
+            </form>
+            <button id='go' type="button" class="btn btn-success mx-3">Go</button>
+            <button id='reset' type="button" class="btn btn-danger mx-3">Reset</button>
+            <button type="button" class="btn btn-primary mx-3" data-toggle="modal" data-target="#legend">Help!</button>
+            <div id="alert" class="my-0 py-0 mr-auto"></div>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="https://github.com/aneeshnema/pathfinder">
+                        <span class="d-none d-sm-inline">View on GitHub </span>
+                        <svg version="1.1" width="16" height="16" viewBox="0 0 16 16"
+                            class="octicon octicon-mark-github" aria-hidden="true">
+                            <path fill-rule="evenodd"
+                                d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z">
+                            </path>
+                        </svg>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <!-- Modal -->
+    <div class="modal fade" id="legend" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Legend</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-3 m-2">
+                            <span class="cell cell-free">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                            Free Cell with weight 0.1
+                        </div>
+                        <div class="col-3 m-2">
+                            <span class="cell cell-wall">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                            Wall (cannot pass)
+                        </div>
+                        <div class="col-3 m-2">
+                            <span class="cell cell-start">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                            Start
+                        </div>
+                        <div class="col-3 m-2">
+                            <span class="cell cell-obs">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                            Obstacle with weight 0.3
+                        </div>
+                        <div class="col-3 m-2">
+                            <span class="cell cell-obs-l">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                            Obstacle with weight 0.6
+                        </div>
+                        <div class="col-3 m-2">
+                            <span class="cell cell-end">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                            End
+                        </div>
+                        <div class="col-3 m-2">
+                            <span class="cell cell-path">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                            Path
+                        </div>
+                        <div class="col-3 m-2">
+                            <span class="cell cell-vis">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                            Visited
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="m-2">
+                        <p>Select Cell Type from the dropdown and use use click and drag to add the selected cell.</p>
+                        <p>Select path finding algorithm from the dropdown.</p>
+                        <p>Press <button class="btn btn-success">Go</button> to visualize (mouse input is blocked during visualization).</p>
+                        <p>Press <button class="btn btn-danger">Reset</button> to reset the grid.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
-  </nav>
-  <div id="map"></div>
-  <script type="module" src="js/main.js"></script>
+    <div id="map"></div>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <script type="module" src="js/main.js"></script>
 </body>
 
 </html>

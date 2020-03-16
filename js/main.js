@@ -1,4 +1,4 @@
-import {Point, Grid} from './pathfinder.js';
+import { Point, Grid } from './pathfinder.js';
 
 var current_cell_type = 'cell-wall';
 var current_algo = 'dijistra';
@@ -6,6 +6,17 @@ var map_wrapper;
 var map;
 var start;
 var end;
+
+function alert(message) {
+    document.getElementById('alert').innerHTML = 
+        '<div class="alert alert-warning alert-dismissible fade show my-0 py-2" role="alert">\
+            '+ message + '\
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">\
+            <span aria-hidden="true">&times;</span>\
+            </button>\
+        </div>';
+    setTimeout(() => (document.getElementById('alert').innerHTML = ''), 5000);
+}
 
 class Map extends Grid {
     constructor(n, m) {
@@ -80,7 +91,7 @@ class Map extends Grid {
         cell.classList.remove(cell_type);
     }
 
-    make_path(paint_flag=false) {
+    make_path(paint_flag = false) {
         for (let p of this.path)
             this.removecelltype(p.getstr, 'cell-path');
         for (let arr of this.visorder)
@@ -104,11 +115,12 @@ class Map extends Grid {
 
         if (this.path == undefined) {
             this.path = [];
+            alert('No path found!');
             return;
         }
-        if(paint_flag)
+        if (paint_flag)
             this.paint();
-        else{
+        else {
             for (let arr of this.visorder)
                 for (let p of arr)
                     this.addcelltype(p.getstr, 'cell-vis');
@@ -120,12 +132,12 @@ class Map extends Grid {
         }
     }
 
-    paint(){
+    paint() {
         let visorder_dup = this.visorder.slice();
         let path_dup = this.path.slice();
-        
-        function paint_callback_path(){
-            if(path_dup.length == 0){
+
+        function paint_callback_path() {
+            if (path_dup.length == 0) {
                 document.body.style.pointerEvents = '';
                 return;
             }
@@ -134,9 +146,9 @@ class Map extends Grid {
             Map.addcelltype(front.getstr, 'cell-path');
             window.requestAnimationFrame(paint_callback_path);
         }
-        
-        function paint_callback_vis(){
-            if(visorder_dup.length == 0){
+
+        function paint_callback_vis() {
+            if (visorder_dup.length == 0) {
                 Map.removecelltype(end.getstr, 'cell-vis');
                 window.requestAnimationFrame(paint_callback_path);
                 return;
@@ -144,7 +156,7 @@ class Map extends Grid {
             let front = visorder_dup.shift();
             for (let p of front)
                 Map.addcelltype(p.getstr, 'cell-vis');
-            window.requestAnimationFrame(paint_callback_vis);    
+            window.requestAnimationFrame(paint_callback_vis);
         }
         document.body.style.pointerEvents = 'none';
         window.requestAnimationFrame(paint_callback_vis);
@@ -211,16 +223,15 @@ function reset() {
 
 Map.cell_weights = {
     'cell-free': 0.1,
-    'cell-obs-s': 0.25,
-    'cell-obs-m': 0.5,
-    'cell-obs-l': 1,
+    'cell-obs': 0.3,
+    'cell-obs-l': 0.6,
     'cell-wall': Infinity,
     'cell-start': 0.1,
     'cell-end': 0.1,
     'cell-path': 0.1,
 }
 
-document.addEventListener("DOMContentLoaded", () => { 
+document.addEventListener("DOMContentLoaded", () => {
     document.getElementById('go').onclick = () => create();
     document.getElementById('reset').onclick = reset;
     map_wrapper = document.getElementById('map');

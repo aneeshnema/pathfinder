@@ -123,14 +123,14 @@ export class Grid {
         return this.distance[a.x][a.y] - this.distance[b.x][b.y];
     }
 
-    hurestic_dist(p){
+    hurestic_dist(p) {
         return Math.abs(this.end.x - p.x) + Math.abs(this.end.y - p.y);
     }
 
-    compare_astar(a, b){
-        return this.compare(a, b) + 0.1*this.hurestic_dist(a) - 0.1*this.hurestic_dist(b);
+    compare_astar(a, b) {
+        return this.compare(a, b) + 0.1 * this.hurestic_dist(a) - 0.1 * this.hurestic_dist(b);
     }
-    
+
     dijistra(start, end) {
         console.assert(start instanceof Point || Array.isArray(start), "start must be instance of Point or Array");
         console.assert(end instanceof Point || Array.isArray(end), "end must be instance of Point or Array");
