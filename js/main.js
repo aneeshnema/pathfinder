@@ -1,7 +1,7 @@
 import { Point, Grid } from './pathfinder.js';
 
 var current_cell_type = 'cell-wall';
-var current_algo = 'dijistra';
+var current_algo = 'a*';
 var map_wrapper;
 var map;
 var start;
